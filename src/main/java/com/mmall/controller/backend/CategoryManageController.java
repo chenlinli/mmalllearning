@@ -92,7 +92,7 @@ public class CategoryManageController {
      */
     @ResponseBody
     @RequestMapping(value = "get_deep_category.do",method = RequestMethod.POST)
-    public ServerResponse<List<Category>> getCategoryAndDeepChildrenCategory(HttpSession httpSession,
+    public ServerResponse<List<Integer>> getCategoryAndDeepChildrenCategory(HttpSession httpSession,
                                                                       @RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId){
         User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
         if(user==null){

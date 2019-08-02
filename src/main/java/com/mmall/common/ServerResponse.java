@@ -82,6 +82,15 @@ public class ServerResponse<T> implements Serializable {
     public static <T> ServerResponse<T> createByErrorCodeNEEDLOGIN(String msg){
         return new ServerResponse<T>(ResponseCode.NEED_LOGIN.getCode(),msg);
     }
+
+    public static <T> ServerResponse<T> createByErrorCodeNEEDLOGIN(){
+        return new ServerResponse<T>(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    }
+
+
+    public static <T> ServerResponse<T> createByErrorCodeIllegaArg(){
+        return new ServerResponse<T>(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+    }
 }
 
 

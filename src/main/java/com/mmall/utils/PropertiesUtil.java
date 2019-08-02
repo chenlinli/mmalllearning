@@ -28,6 +28,7 @@ public class PropertiesUtil {
     }
 
     public static String getProperty(String key){
+        //防止配置文件前后有空格
         String value = props.getProperty(key.trim());
         if(StringUtils.isBlank(value)){
             return null;
@@ -43,7 +44,6 @@ public class PropertiesUtil {
         }
         return value.trim();
     }
-
 
 
 }

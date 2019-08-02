@@ -92,7 +92,7 @@ public class UserController {
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew,HttpSession httpSession){
         User user = (User) httpSession.getAttribute(Const.CURRENT_USER);
         if(user==null){
-            return ServerResponse.createByErrorMessage("用户未登录");
+            return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录");
         }
         return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
@@ -120,7 +120,7 @@ public class UserController {
     public ServerResponse<User> getInformation(HttpSession httpSession){
         User currentUser = (User) httpSession.getAttribute(Const.CURRENT_USER);
         if(currentUser==null){
-            return ServerResponse.createByErrorMessage("用户未登录");
+            return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录,无法获取当前用户信息,status=10,强制登录");
         }
         return iUserService.getInfomation(currentUser.getId());
     }

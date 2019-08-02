@@ -10,7 +10,6 @@ import com.mmall.utils.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.text.resources.no.CollationData_no;
 
 import java.util.UUID;
 
@@ -43,6 +42,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     public ServerResponse<String> register(User user){
+        //userrname和email不能重复
         ServerResponse<String> stringServerResponse = this.checkValid(user.getUsername(), Const.USERNAME);
         if(!stringServerResponse.isSuccess()){
             return stringServerResponse;
@@ -51,6 +51,7 @@ public class UserServiceImpl implements IUserService {
         if(!stringServerResponse.isSuccess()){
             return stringServerResponse;
         }
+        //默认是普通用户
         user.setRole(Const.Role.ROLE_CUSTOMER);
         //md5加密
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
@@ -60,7 +61,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("注册失败");
         }
 
-        return ServerResponse.createBySuccessMNessage("注册成功");
+        return ServerResponse.createBySuccessMessage("注册成功");
 
     }
 
@@ -92,7 +93,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("参数错误");
         }
 
-        return ServerResponse.createBySuccessMNessage("校验成功");
+        return ServerResponse.createBySuccessMessage("校验成功");
     }
 
     public ServerResponse<String> selectQuestion(String username){
@@ -138,14 +139,14 @@ public class UserServiceImpl implements IUserService {
             passwordNew = MD5Util.MD5EncodeUtf8(passwordNew);
             int rowCount = userMapper.updatePasswordByUsername(username, passwordNew);
             if(rowCount>0){
-                return ServerResponse.createBySuccessMNessage("修改密码称呼");
+                return ServerResponse.createBySuccessMessage("修改密码成功");
             }
 
         }else{
             return ServerResponse.createByErrorMessage("token错误");
         }
 
-        return ServerResponse.createBySuccessMNessage("修改密码失败");
+        return ServerResponse.createBySuccessMessage("修改密码失败");
     }
 
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew,User user){
@@ -159,7 +160,7 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
         int updateCount = userMapper.updateByPrimaryKeySelective(user);
         if(updateCount>0){
-            return ServerResponse.createBySuccessMNessage("密码更新成功");
+            return ServerResponse.createBySuccessMessage("密码更新成功");
         }
         return ServerResponse.createByErrorMessage("密码更新失败");
     }
@@ -192,6 +193,16 @@ public class UserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    //backend
+
+    public ServerResponse<String> checkAdminRole(User user){
+        if(null!=user && user.getRole().intValue() ==Const.Role.ROLL_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+
     }
 }
 

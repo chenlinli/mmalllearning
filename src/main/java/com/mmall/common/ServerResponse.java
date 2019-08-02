@@ -10,33 +10,33 @@ import java.io.Serializable;
 public class ServerResponse<T> implements Serializable {
 
     private String msg;
-    private int staus;
+    private int status;
     private T data;
 
     private ServerResponse(int status){
-        this.staus  = status;
+        this.status  = status;
     }
 
-    private ServerResponse(int staus, T data) {
-        this.staus = staus;
+    private ServerResponse(int status, T data) {
+        this.status = status;
         this.data = data;
     }
 
-    private ServerResponse( int staus,String msg, T data) {
+    private ServerResponse(int status,String msg, T data) {
         this.msg = msg;
-        this.staus = staus;
+        this.status = status;
         this.data = data;
     }
 
     //第二个和第四个如果第二个参数传String,会调用第四个，第二个参数非String会调第二个
-    private ServerResponse(int staus,String msg) {
+    private ServerResponse(int status,String msg) {
         this.msg = msg;
-        this.staus = staus;
+        this.status = status;
     }
 
     @JsonIgnore //不序列化success字段，json序列化根据方法名
     public boolean isSuccess(){
-        return staus==ResponseCode.SUCCESS.getCode();
+        return status==ResponseCode.SUCCESS.getCode();
     }
 
     public T getData(){
@@ -47,15 +47,15 @@ public class ServerResponse<T> implements Serializable {
         return msg;
     }
 
-    public int getStaus() {
-        return staus;
+    public int getStatus() {
+        return status;
     }
 
     public static <T> ServerResponse<T> createBySuccess(){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
     }
 
-    public static <T> ServerResponse<T> createBySuccessMNessage(String msg){
+    public static <T> ServerResponse<T> createBySuccessMessage(String msg){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),msg);
     }
 
@@ -77,6 +77,10 @@ public class ServerResponse<T> implements Serializable {
 
     public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode,String errorMsg){
         return new  ServerResponse<T>(errorCode,errorMsg);
+    }
+
+    public static <T> ServerResponse<T> createByErrorCodeNEEDLOGIN(String msg){
+        return new ServerResponse<T>(ResponseCode.NEED_LOGIN.getCode(),msg);
     }
 }
 

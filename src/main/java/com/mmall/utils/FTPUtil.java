@@ -46,6 +46,7 @@ public class FTPUtil {
         //链接服务器
         if(connectServer(getIp(),getPort(),getUser(),getPwd())){
             try {
+                //切换文件夹：//这里ftp服务器上没有img文件夹，切换目录不成功返回false
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");

@@ -65,6 +65,11 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categories);
     }
 
+    /**
+     * 当前类及其的所有子孙类别的id集合
+     * @param categoryId
+     * @return
+     */
     public ServerResponse<List<Integer>> getCategoryAndChildrenById(Integer categoryId){
         Set<Category> categorySet = Sets.newHashSet();
         findChildCategory(categorySet,categoryId);

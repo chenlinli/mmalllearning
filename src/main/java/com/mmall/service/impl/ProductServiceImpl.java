@@ -193,11 +193,12 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
-    public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword,Integer categoryId,int pageNum,int pageSize,String orderBy){
+    public ServerResponse<PageInfo> getProductByKeywordCategoryId(String keyword, Integer categoryId, int pageNum, int pageSize, String orderBy){
         if(StringUtils.isBlank(keyword) && categoryId==null){
             return ServerResponse.createByErrorCodeIllegaArg();
         }
         List<Integer> categoryIdList = Lists.newArrayList();
+
         if(categoryId!=null){
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
             if(category==null&&StringUtils.isBlank(keyword)){
@@ -207,7 +208,8 @@ public class ProductServiceImpl implements IProductService {
                 PageInfo pageInfo = new PageInfo(productListVoList);
                 return ServerResponse.createBySuccess();
             }
-            //高级分类时
+            //category==null&&keyword !=null ||category!=null&&keyword==null 高级分类时，查找他和他的所有子孙类的idList
+            //可能size=0
             categoryIdList = iCategoryService.getCategoryAndChildrenById(categoryId).getData();
         }
 

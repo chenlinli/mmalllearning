@@ -1,9 +1,9 @@
 package com.mmall.common;
 
-import com.google.common.collect.Sets;
-import org.apache.commons.lang3.StringUtils;
+        import com.google.common.collect.Sets;
+        import org.apache.commons.lang3.StringUtils;
 
-import java.util.Set;
+        import java.util.Set;
 
 public class Const {
 
@@ -42,8 +42,102 @@ public class Const {
             return code;
         }
 
-        public void setCode(int code) {
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public  enum OrderStatusEnum{
+        CANCLE(0,"已取消"),
+        NO_PAY(10,"未支付"),
+        PAID(20,"已发货"),
+        SHIPPED(40,"已发货"),
+        OEDER_SUCCESS(50,"订单完成"),
+        ORDER_CLOSE(60,"订单关闭")
+        ;
+
+        private String value;
+        private int code;
+
+        OrderStatusEnum(int code,String value){
             this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static OrderStatusEnum codeOf(int code){
+            for(OrderStatusEnum orderStatusEnum:values()){
+                if(orderStatusEnum.getCode()==code){
+                    return orderStatusEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
+        }
+    }
+
+    public interface AlipayCallback{
+        String TRADE_STATUS_WAIT_BUYER_PAY="WAIT_BUYER_PAY";
+        String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
+
+        String RESPONSE_SCCESS="success";
+        String RESPONSE_FAILED="failed";
+        //String TRADE_STATUS_TRADE_FINISHED = "TRADE_FINISHED";
+        //String TRADE_STATUS_TRADE_CLOSED="TRADE_CLOSED";
+    }
+
+    public enum PayPlatformEnum{
+        ALIPAY(1,"支付宝")
+        ;
+        private String value;
+        private int code;
+
+        PayPlatformEnum(int code,String value){
+            this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum PaymentTypeEnum{
+        ONLINE_PAY(1,"在线支付")
+        ;
+        private String value;
+        private int code;
+
+        PaymentTypeEnum(int code,String value){
+            this.code = code;
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static PaymentTypeEnum codeOf(int code){
+            for(PaymentTypeEnum paymentTypeEnum:values()){
+                if(paymentTypeEnum.getCode()==code){
+                    return paymentTypeEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
         }
     }
 }

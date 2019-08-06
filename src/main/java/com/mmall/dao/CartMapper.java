@@ -29,4 +29,6 @@ public interface CartMapper {
     int checkOrUnCheckProduct(@Param("userId")Integer userId, @Param("productId") Integer productId,  @Param("checked")Integer checked);
 
     int selectCartProductCount(Integer userId);//user_id在cart表不存在的话，sum返回空，不能赋值给int-
+
+    List<Cart> selectCheckedCartByUserId(Integer userId);
 }

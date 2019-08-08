@@ -3,6 +3,7 @@ package com.mmall.service.impl;
 import com.google.common.collect.Lists;
 import com.mmall.service.IFileService;
 import com.mmall.utils.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Service("iFileService")
 public class FileServiceImpl implements IFileService {
 
-    private static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     /**
      * 上传文件
@@ -30,7 +31,7 @@ public class FileServiceImpl implements IFileService {
         String fileExtensionName = fileName.substring(fileName.lastIndexOf(".")+1);//jpg
         //避免不同用户相同文件名
         String uploadFileName = UUID.randomUUID().toString()+"."+fileExtensionName;
-        logger.info("开始上传文件，上传文件名:{}，上传路径:{},新文件名：{}",fileName,path,uploadFileName);
+        log.info("开始上传文件，上传文件名:{}，上传路径:{},新文件名：{}",fileName,path,uploadFileName);
 
         File fileDir = new File(path);
         if(!fileDir.exists()){
@@ -48,7 +49,7 @@ public class FileServiceImpl implements IFileService {
             //上传完成后删除本地的 upload的对应文件
             targetFile.delete();//upload文件夹仍旧存在
         } catch (IOException e) {
-            logger.error("上传文件异常："+e);
+            log.error("上传文件异常："+e);
         }
 
         return targetFile.getName();

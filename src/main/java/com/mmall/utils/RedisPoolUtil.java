@@ -1,7 +1,6 @@
 package com.mmall.utils;
 
 import com.mmall.common.RedisPool;
-import jdk.internal.util.xml.impl.ReaderUTF8;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 

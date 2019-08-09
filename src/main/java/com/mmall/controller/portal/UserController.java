@@ -42,8 +42,6 @@ public class UserController {
         if (result.isSuccess()) {
             //httpSession.setAttribute(Const.CURRENT_USER, result.getData());
             CookieUtil.writeLoginToken(httpServletResponse,httpSession.getId());
-            CookieUtil.readLoginToken(request);
-            CookieUtil.delLoginToken(request,httpServletResponse);
             RedisPoolUtil.setEx(httpSession.getId(), JsonUtil.obj2String(result.getData()),Const.RedisCacheExtime.REDIS_SESSION_TIME);
         }
         return result;

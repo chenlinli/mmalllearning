@@ -5,14 +5,20 @@ import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.ICartService;
 import com.mmall.service.IUserService;
+import com.mmall.utils.CookieUtil;
+import com.mmall.utils.JsonUtil;
+import com.mmall.utils.RedisPoolUtil;
 import com.mmall.vo.CartVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.HTML;
 
 @Controller
 @RequestMapping("/cart/")
@@ -26,11 +32,16 @@ public class CartController {
 
     @ResponseBody
     @RequestMapping(value = "add.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> add(HttpSession httpSession, Integer count, Integer productId){
+    public ServerResponse<CartVo> add(HttpServletRequest request, Integer count, Integer productId){
         if(productId==null || count==null){
             return ServerResponse.createByErrorCodeIllegaArg();
         }
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -40,11 +51,16 @@ public class CartController {
 
     @ResponseBody
     @RequestMapping(value = "update.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> update(HttpSession httpSession, Integer count, Integer productId){
+    public ServerResponse<CartVo> update(HttpServletRequest request, Integer count, Integer productId){
         if(productId==null || count==null){
             return ServerResponse.createByErrorCodeIllegaArg();
         }
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -54,9 +70,14 @@ public class CartController {
 
     @ResponseBody
     @RequestMapping(value = "delete_product.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> deleteProduct(HttpSession httpSession, String productIds){
+    public ServerResponse<CartVo> deleteProduct(HttpServletRequest request, String productIds){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -65,9 +86,14 @@ public class CartController {
 
     @ResponseBody
     @RequestMapping(value = "list.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> list(HttpSession httpSession){
+    public ServerResponse<CartVo> list(HttpServletRequest request){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -81,9 +107,14 @@ public class CartController {
      */
     @ResponseBody
     @RequestMapping(value = "select_all.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> selectAll(HttpSession httpSession){
+    public ServerResponse<CartVo> selectAll(HttpServletRequest request){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -97,9 +128,14 @@ public class CartController {
      */
     @ResponseBody
     @RequestMapping(value = "un_select_all.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> unSelectAll(HttpSession httpSession){
+    public ServerResponse<CartVo> unSelectAll(HttpServletRequest request){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -114,9 +150,14 @@ public class CartController {
      */
     @ResponseBody
     @RequestMapping(value = "select.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> list(HttpSession httpSession,Integer productId){
+    public ServerResponse<CartVo> list(HttpServletRequest request,Integer productId){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -130,9 +171,14 @@ public class CartController {
      */
     @ResponseBody
     @RequestMapping(value = "un_select.do" ,method = RequestMethod.GET)
-    public ServerResponse<CartVo> unSelect(HttpSession httpSession,Integer productId){
+    public ServerResponse<CartVo> unSelect(HttpServletRequest request,Integer productId){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createByErrorCodeNEEDLOGIN("用户未登录，请登录");
         }
@@ -146,9 +192,14 @@ public class CartController {
      */
     @ResponseBody
     @RequestMapping(value = "get_cart_product_count.do" ,method = RequestMethod.GET)
-    public ServerResponse<Integer> getCartProductCount(HttpSession httpSession){
+    public ServerResponse<Integer> getCartProductCount(HttpServletRequest request){
 
-        User user = (User)httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createBySuccess(0);
         }

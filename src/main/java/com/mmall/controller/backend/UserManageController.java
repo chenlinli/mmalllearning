@@ -6,7 +6,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JsonUtil;
-import com.mmall.utils.RedisPoolUtil;
+import com.mmall.utils.RedisShardedPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +33,7 @@ public class UserManageController {
             User user = response.getData();
             if(user.getRole().equals(Const.Role.ROLL_ADMIN)){
                 CookieUtil.writeLoginToken(httpServletResponse,httpSession.getId());
-                RedisPoolUtil.setEx(httpSession.getId(), JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_TIME);
+                RedisShardedPoolUtil.setEx(httpSession.getId(), JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_TIME);
                 return response;
             }else{
                 return ServerResponse.createByErrorMessage("不是管理员无法登陆");

@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/logout.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout.do", method = RequestMethod.GET)
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) {
         //httpSession.removeAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);

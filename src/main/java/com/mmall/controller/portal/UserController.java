@@ -8,6 +8,7 @@ import com.mmall.service.IUserService;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JsonUtil;
 import com.mmall.utils.RedisPoolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +37,7 @@ public class UserController {
     @ResponseBody//返回转为json
     @RequestMapping(value = "/login.do", method = RequestMethod.GET)
     public ServerResponse<User> login(String username, String password, HttpSession httpSession,
-                                      HttpServletResponse httpServletResponse,
-                                      HttpServletRequest request) {
+                                      HttpServletResponse httpServletResponse) {
         ServerResponse<User> result = iUserService.login(username, password);
         if (result.isSuccess()) {
             //httpSession.setAttribute(Const.CURRENT_USER, result.getData());
@@ -49,13 +49,16 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/logout.do", method = RequestMethod.POST)
-    public ServerResponse<String> logout(HttpSession httpSession) {
-        httpSession.removeAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) {
+        //httpSession.removeAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        CookieUtil.delLoginToken(request,response);
+        RedisPoolUtil.del(loginToken);
         return ServerResponse.createBySuccess();
     }
 
     @ResponseBody
-    @RequestMapping(value = "/register.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/register.do", method = RequestMethod.GET)
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
@@ -67,9 +70,15 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/get_user_info.do", method = RequestMethod.POST)
-    public ServerResponse<User> getUserInfo(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute(Const.CURRENT_USER);
+    @RequestMapping(value = "/get_user_info.do", method = RequestMethod.GET)
+    public ServerResponse<User> getUserInfo(HttpSession httpSession,HttpServletRequest request) {
+        //User user = (User) httpSession.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(request);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if (user != null) {
             return ServerResponse.createBySuccess(user);
         }

@@ -36,7 +36,7 @@ public class OrderManageController {
                                               @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                               @RequestParam(value = "pageNum",defaultValue = "1") int pageNum){
 
-        String loginToken = CookieUtil.readLoginToken(request);
+      /*  String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -52,14 +52,15 @@ public class OrderManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        return iOrderService.manageList(pageSize,pageNum);
     }
 
      @RequestMapping("detail.do")
     @ResponseBody
     public ServerResponse<OrderVo> orderDetail(HttpServletRequest request, long orderNo){
 
-         String loginToken = CookieUtil.readLoginToken(request);
+       /*  String loginToken = CookieUtil.readLoginToken(request);
          if(StringUtils.isEmpty(loginToken)){
              return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
          }
@@ -75,12 +76,13 @@ public class OrderManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+         return iOrderService.manageDetail(orderNo);
     }
 
     /**
      * 精确搜索
-     * @param httpSession
+     * @param request
      * @param orderNo
      * @param pageSize
      * @param pageNum
@@ -92,7 +94,7 @@ public class OrderManageController {
                                                 @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                                 @RequestParam(value = "pageNum",defaultValue = "1") int pageNum){
 
-        String loginToken = CookieUtil.readLoginToken(request);
+    /*    String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -108,12 +110,13 @@ public class OrderManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        return iOrderService.manageSearch(orderNo,pageNum,pageSize);
     }
 
     /**
      * 发货
-     * @param httpSession
+     * @param request
      * @param orderNo
      * @return
      */
@@ -121,7 +124,7 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<String> orderSendGoods(HttpServletRequest request, long orderNo){
 
-        String loginToken = CookieUtil.readLoginToken(request);
+       /* String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -137,7 +140,8 @@ public class OrderManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        return iOrderService.manageSendGoods(orderNo);
     }
 
 }

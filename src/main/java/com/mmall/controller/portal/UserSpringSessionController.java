@@ -38,6 +38,9 @@ public class UserSpringSessionController {
     @RequestMapping(value = "/login.do", method = RequestMethod.GET)
     public ServerResponse<User> login(String username, String password, HttpSession httpSession
                                       ) {
+        //测试全局异常
+     /*   int i=0;
+        int j=777/i;*/
         ServerResponse<User> result = iUserService.login(username, password);
         if (result.isSuccess()) {
             httpSession.setAttribute(Const.CURRENT_USER,result.getData());
@@ -48,6 +51,7 @@ public class UserSpringSessionController {
     @ResponseBody
     @RequestMapping(value = "/logout.do", method = RequestMethod.GET)
     public ServerResponse<String> logout(HttpSession httpSession) {
+
         httpSession.removeAttribute(Const.CURRENT_USER);
         return ServerResponse.createBySuccess();
     }

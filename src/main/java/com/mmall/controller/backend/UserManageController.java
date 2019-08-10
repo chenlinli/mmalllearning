@@ -25,7 +25,7 @@ public class UserManageController {
     private IUserService iUserService;
 
     @ResponseBody
-    @RequestMapping(value = "/login.do",method = RequestMethod.POST)
+    @RequestMapping(value = "/login.do",method = RequestMethod.GET)
     public ServerResponse<User> login(String username, String password,HttpSession httpSession,
                                       HttpServletResponse httpServletResponse){
         ServerResponse<User> response = iUserService.login(username, password);

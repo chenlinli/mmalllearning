@@ -49,7 +49,7 @@ public class ProductManageController {
     @ResponseBody
     @RequestMapping(value = "save.do",method = RequestMethod.GET)
     public ServerResponse productSave(HttpServletRequest request,Product product){
-        String loginToken = CookieUtil.readLoginToken(request);
+      /*  String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -67,6 +67,8 @@ public class ProductManageController {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
 
+*/
+        return iProductService.saveOrUpdateProduct(product);
     }
 
 
@@ -80,7 +82,7 @@ public class ProductManageController {
     @ResponseBody
     @RequestMapping(value = "set_sell_status.do",method = RequestMethod.GET)
     public ServerResponse setSaleStatus(HttpServletRequest request,Integer productId,Integer status){
-        String loginToken = CookieUtil.readLoginToken(request);
+       /* String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -96,14 +98,15 @@ public class ProductManageController {
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
-
+*/
+        return iProductService.setSaleStatus(productId,status);
     }
 
 
     @ResponseBody
     @RequestMapping(value = "detail.do",method = RequestMethod.POST)
     public ServerResponse getDetail(HttpServletRequest request,Integer productId){
-        String loginToken = CookieUtil.readLoginToken(request);
+    /*    String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -118,7 +121,9 @@ public class ProductManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+
+        return iProductService.manageProductDetail(productId);
 
     }
 
@@ -134,7 +139,7 @@ public class ProductManageController {
     public ServerResponse getList(HttpServletRequest request,
                                   @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                   @RequestParam(value = "pageSize" ,defaultValue = "10") int pageSize){
-        String loginToken = CookieUtil.readLoginToken(request);
+    /*    String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -148,7 +153,8 @@ public class ProductManageController {
             return iProductService.getProductList(pageNum,pageSize);
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        return iProductService.getProductList(pageNum,pageSize);
     }
 
     /**
@@ -166,7 +172,7 @@ public class ProductManageController {
                                   String productName,Integer productId,
                                   @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                   @RequestParam(value = "pageSize" ,defaultValue = "10") int pageSize){
-        String loginToken = CookieUtil.readLoginToken(request);
+     /*   String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -180,7 +186,8 @@ public class ProductManageController {
             return iProductService.searchProduct(productName,productId,pageNum,pageSize);
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        return iProductService.searchProduct(productName,productId,pageNum,pageSize);
     }
 
     /**
@@ -195,7 +202,7 @@ public class ProductManageController {
                                  @RequestParam(value = "upload_file",required = false) MultipartFile multipartFile,
                                  HttpServletRequest request){
 
-        String loginToken = CookieUtil.readLoginToken(request);
+      /*  String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法返回当前用户信息");
         }
@@ -217,7 +224,15 @@ public class ProductManageController {
 
         }else{
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-        }
+        }*/
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String upload = iFileService.upload(multipartFile, path);//返回文件名
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+upload;
+
+        HashMap<Object, Object> map = Maps.newHashMap();
+        map.put("uri",upload);
+        map.put("url",url);
+        return ServerResponse.createBySuccess(map);
 
     }
 
@@ -233,7 +248,7 @@ public class ProductManageController {
     public Map richtextImgUpload(HttpServletResponse response,HttpSession httpSession, @RequestParam(value = "upload_file",required = false) MultipartFile multipartFile, HttpServletRequest request){
 
         Map resultMap = Maps.newHashMap();
-        String loginToken = CookieUtil.readLoginToken(request);
+       /* String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             resultMap.put("success",false);
             resultMap.put("msg","请登录管理员");
@@ -268,10 +283,20 @@ public class ProductManageController {
             resultMap.put("msg","无权限操作");
             return resultMap;
         }
-
+*/
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String upload = iFileService.upload(multipartFile, path);//返回文件名
+        if(StringUtils.isBlank(upload)){
+            resultMap.put("success",false);
+            resultMap.put("msg","上传失败");
+            return resultMap;
+        }
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+upload;
+        resultMap.put("success",true);
+        resultMap.put("msg","上次成功");
+        resultMap.put("file_path",url);
+        response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+        return resultMap;
     }
-
-
-
 
 }

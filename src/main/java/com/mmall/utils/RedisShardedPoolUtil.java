@@ -130,7 +130,20 @@ public class RedisShardedPoolUtil {
         RedisShardedPool.returnResource(jedis);
         return result;
     }
-
+    public static String getSet(String key,String value){
+        ShardedJedis jedis = null;
+        String result  = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.getSet(key,value);
+        } catch (Exception e) {
+            log.error("set key:{},value:{} error",key,value,e);
+            //放回异常的连接
+            RedisShardedPool.returnBrokenResource(jedis);
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
     public static void main(String[] args) {
         ShardedJedis jedis = RedisShardedPool.getJedis();
         RedisShardedPoolUtil.set("key1","v1");

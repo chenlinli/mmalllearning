@@ -115,6 +115,22 @@ public class RedisShardedPoolUtil {
         return result;
     }
 
+    //scheduel+redis
+    public static Long setnx(String key,String value){
+        ShardedJedis jedis = null;
+        Long result  = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.setnx(key,value);
+        } catch (Exception e) {
+            log.error("setnx key:{},value:{} error",key,value,e);
+            //放回异常的连接
+            RedisShardedPool.returnBrokenResource(jedis);
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
     public static void main(String[] args) {
         ShardedJedis jedis = RedisShardedPool.getJedis();
         RedisShardedPoolUtil.set("key1","v1");

@@ -14,6 +14,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.*;
@@ -30,6 +31,7 @@ import com.mmall.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -605,4 +607,29 @@ public class OrderServiceImpl implements IOrderService{
         return ServerResponse.createByError();
     }
 
+    @Override
+    public void closeOrder(int hour) {
+        Date closeDateTime = DateUtils.addHours(new Date(),-hour);
+        //查找符合下单时间的Order
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(),DateTimeUtil.dateToStr(closeDateTime));
+        for(Order order:orderList){
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for(OrderItem orderItem:orderItemList){
+                //整行：下单后，原商品被删除了，查不到库存，int是null会报错的
+                //主键where条件，防止锁表，使用InnoDB引擎
+                Integer stock = orderItemMapper.selectStockByProductId(orderItem.getProductId());
+                if(stock==null){
+                        continue;
+                }else{
+                    Product product = new Product();
+                    product.setId(orderItem.getProductId());
+                    product.setStock(stock+orderItem.getQuantity());
+                    productMapper.updateByPrimaryKeySelective(product);
+                }
+                int row = orderMapper.closeOrderByOrderId(order.getId());
+                log.info("关闭订单：{}",order.getId());
+            }
+        }
+
+    }
 }

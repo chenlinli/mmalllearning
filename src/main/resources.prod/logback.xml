@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <property name="LOH_HOME" value="${CATALINA_HOME}/logs"></property>
+
     <!--debug及以上级别都打印控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoding>UTF-8</encoding>
@@ -14,9 +16,9 @@
     <!--项目日志：可以回滚，可以存10天-->
     <appender name="mmall" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>d:/mmalllog/mmall.log</File>-->
-        <File>E:\\Data\\JavaECommerce\\toolsMall\\log\\mmall.log</File>
+        <File>LOH_HOME/mmall.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>E:\\Data\\JavaECommerce\\toolsMall\\log\\mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>LOH_HOME/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -29,9 +31,9 @@
     <!--level是error才记录-->
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>d:/mmalllog/error.log</File>-->
-        <File>E:\\Data\\JavaECommerce\\toolsMall\\log\\error.log</File>
+        <File>LOH_HOME/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>E:\\Data\\JavaECommerce\\toolsMall\\log\\error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>LOH_HOME/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <!--<fileNamePattern>d:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
             <append>true</append>
             <maxHistory>10</maxHistory>
@@ -50,6 +52,7 @@
     <logger name="com.mmall" additivity="false" level="INFO" >
         <appender-ref ref="mmall" />
         <appender-ref ref="console"/>
+        <appender-ref ref="error"/>
     </logger>
 
 

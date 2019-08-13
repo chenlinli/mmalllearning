@@ -24,24 +24,24 @@
   </filter-mapping>
 
 <!--二期新增：session过期时间的filter-->
-  <!--<filter>-->
-    <!--<filter-name>SessionExpireFilter</filter-name>-->
-    <!--<filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>-->
-  <!--</filter>-->
-
-  <!--<filter-mapping>-->
-    <!--<filter-name>SessionExpireFilter</filter-name>-->
-    <!--<url-pattern>*.do</url-pattern>-->
-  <!--</filter-mapping>-->
-
   <filter>
+    <filter-name>SessionExpireFilter</filter-name>
+    <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>SessionExpireFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+
+ <!-- <filter>
     <filter-name>springSessionRepositoryFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>springSessionRepositoryFilter</filter-name>
     <url-pattern>*.do</url-pattern>
-  </filter-mapping>
+  </filter-mapping>-->
 
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>

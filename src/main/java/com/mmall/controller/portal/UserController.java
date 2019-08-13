@@ -35,7 +35,7 @@ public class UserController {
      * @return
      */
     @ResponseBody//返回转为json
-    @RequestMapping(value = "/login.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
     public ServerResponse<User> login(String username, String password, HttpSession httpSession,
                                       HttpServletResponse httpServletResponse) {
         ServerResponse<User> result = iUserService.login(username, password);
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/logout.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/logout.do", method = RequestMethod.POST)
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) {
         String loginToken = CookieUtil.readLoginToken(request);
         CookieUtil.delLoginToken(request,response);
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/register.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/register.do", method = RequestMethod.POST)
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/get_user_info.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_user_info.do", method = RequestMethod.POST)
     public ServerResponse<User> getUserInfo(HttpSession httpSession,HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
